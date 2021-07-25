@@ -1,0 +1,12 @@
+{
+    "users": [
+        {
+            "username": "steve123",
+            "email": "steve@prp.com"
+        },
+        {
+            "username": "mark11",
+            "email": "mark@prp.com"
+        }
+    ]
+}
