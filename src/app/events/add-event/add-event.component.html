@@ -1,0 +1,58 @@
+<div class="container">
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+        <h1> ENTER EVENT DETAILS </h1>
+        <mat-form-field appearance="fill">
+            <mat-label> Name </mat-label>
+            <input type="text" matInput formControlName="name" required>
+            <mat-error *ngIf="eventForm.controls.name.invalid"> {{getErrorMessage(eventForm.controls.name)}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label> Location </mat-label>
+            <input type="text" matInput formControlName="location" required>
+            <mat-error *ngIf="eventForm.controls.location.invalid"> {{getErrorMessage(eventForm.controls.location)}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" >
+            <mat-label> Date </mat-label>
+            <input type="date" matInput formControlName="date" min="{{today}}" required>
+            <mat-error *ngIf="eventForm.controls.date.invalid"> {{getErrorMessage(eventForm.controls.date)}}</mat-error>
+        </mat-form-field>
+
+        <div formGroupName="time">
+            <mat-form-field appearance="fill">
+                <mat-label> From </mat-label>
+                <input type="time" matInput formControlName="from" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label> To </mat-label>
+                <input type="time" matInput formControlName="to" required>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field class="example-chip-list" appearance="fill">
+            <mat-label>Invitees</mat-label>
+            <mat-chip-list #chipList aria-label="Invitees" formControlName="invitees">
+              <mat-chip *ngFor="let invitee of invitees" [selectable]="selectable"
+                       [removable]="removable" (removed)="remove(invitee)">
+                {{invitee}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Add Invitee" 
+                     [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" >
+            <mat-label> Owner </mat-label>
+            <input type="text" matInput formControlName="owner" required>
+            <mat-error *ngIf="eventForm.controls.owner.invalid"> {{getErrorMessage(eventForm.controls.owner)}}</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button type="submit" color="primary" [disabled]="eventForm.invalid"> {{submitButton}} </button>
+
+    </form>
+</div>

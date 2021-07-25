@@ -1,0 +1,25 @@
+<div class="container">
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <h1> ENTER USER DETAILS </h1>
+
+        <mat-form-field appearance="fill">
+            <mat-label> Username </mat-label>
+            <input type="text" matInput formControlName="username" required>
+            <mat-error *ngIf="userForm.controls.username.invalid"> {{getErrorMessage(userForm.controls.username)}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label> Email </mat-label>
+            <input type="text" matInput formControlName="email" required>
+            <mat-error *ngIf="userForm.controls.email.invalid"> {{getErrorMessage(userForm.controls.email)}}</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button type="submit" color="primary" [disabled]="userForm.invalid"> {{submitButton}} </button>
+
+    </form>
+
+
+
+
+</div>

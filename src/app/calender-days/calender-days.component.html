@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="leftPanel">
+        <div class="calendar">
+            <div class="title">
+                Calendar & Events 
+            </div>
+            <form [formGroup]="dateForm">
+                <div class="month">
+                    <mat-select formControlName="month">
+                        <mat-option *ngFor="let month of months; let i=index" [value]="i">
+                            {{month}}
+                        </mat-option>
+                    </mat-select>
+
+                    <span class="year"> 2021</span>
+                </div>
+
+                <div class="week">
+                    <span *ngFor="let day of days"> {{day}} </span>
+                </div>
+
+                <div class="days">
+                    <span *ngFor="let day of numOfDays">
+                        <a class="date" mat-fab *ngIf="day!=0"
+                            [class.active]="checkActiveDay(day, selectedDate.getMonth())"
+                            (click)="changeDate(day)">{{day}}</a>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <app-users class="users"></app-users>
+        </div>
+    </div>
+
+    <div class="rightPanel">
+        <app-events></app-events>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+.container{
+    height: 100%;
+}
+
+.addEvents{
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    z-index: 10;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid gray;
+}
+
+.header span{
+    margin-left: auto;
+}
+
+.content{
+    padding: 20px;
+    position: relative;
+}
+
+.noContent{
+    padding: 20px;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+
+mat-card{
+    margin: 10px 0;
+    background-color: rgba(241, 135, 1, 0.3);
+    opacity: 0.8;
+    display: flex;
+}
+
+mat-card p{
+   display: flex;
+   align-items: center;
+}
+
+.fromTime::after{
+    content: "-";
+    margin: 5px;
+}
+
+.actions{
+    margin-left: auto;
+}
+
+.actions a{
+    margin:20px
+}
+

@@ -1,0 +1,62 @@
+<div class="container">
+    <a class="addEvents" mat-fab color="warn" (click)="addEvent()" aria-label="Add Event"> <mat-icon>add</mat-icon>  </a>
+
+    <div class="header">
+        <h3>
+            <span>
+                Events on {{selectedDateValue | date}}
+            </span>  
+        </h3>
+    </div>
+
+    <div class="content" *ngIf="events.length !=0">
+
+        <mat-card *ngFor="let event of events">
+            <div class="details">
+                <mat-card-title>{{event.name}}</mat-card-title>
+                <p>
+                    <mat-icon> location_on</mat-icon> &nbsp;
+                    <span>{{event.location}}</span>
+                </p>
+                <p>
+                    <mat-icon>date_range</mat-icon> &nbsp;
+                    <span>{{event.date | date}}</span>
+                </p>
+                <p>
+                    <mat-icon>access_time</mat-icon> &nbsp;
+                    <span class="fromTime">{{event.time.from}}</span>
+                    <span>{{event.time.to}}</span>
+                </p>
+                <p>
+                    {{event.status}}
+                </p>
+                <p>
+                    {{event.owner}}
+                </p>
+            </div>
+            <div class="actions" *ngIf="event.status != 'CLOSED'">
+                <a mat-fab color="warn" (click)="deleteEvent(event)">
+                    <mat-icon>delete</mat-icon>
+                </a>
+                <a mat-fab color="primary" (click)="editEvent(event)">
+                    <mat-icon>edit</mat-icon>
+                </a>
+            </div>
+        </mat-card>
+    </div>
+
+    <div class="noContent" *ngIf="events.length == 0">
+        <h2> No event on the selected day !! </h2>
+    </div>
+
+</div>
+
+<ng-template #deleteConfirmation>
+    <div mat-dialog-content>
+        <p>Sure you want to delete this event?</p>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button color="warn" [mat-dialog-close]="false">No</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true">Yes</button>
+    </div>
+</ng-template>

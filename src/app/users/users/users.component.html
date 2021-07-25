@@ -1,0 +1,17 @@
+<h2> User </h2>
+<div class="content">
+    <form [formGroup]="userSelectForm" *ngIf="users" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+            <mat-label> Current logged in user </mat-label>
+            <mat-select color="primary" formControlName="username">
+                <mat-option *ngFor="let user of users; let i=index" [value]="user.username">
+                    {{user.username}}
+                </mat-option>
+            </mat-select>
+            </mat-form-field>
+            <button type="submit" mat-raised-button color="primary" [disabled]="userSelectForm.invalid || userSelectForm.pristine"> Switch User </button>
+    </form>
+    <span>
+        <a mat-raised-button color="warn" (click)="addUser()"> Add New User </a>
+    </span>
+</div>
