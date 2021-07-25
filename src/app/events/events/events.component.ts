@@ -41,6 +41,7 @@ export class EventsComponent implements OnInit {
   getEvents(){
     this.helperService.getEvents().subscribe(res=>{
       this.events = this.localStorageService.getEvents().filter(data=> data.date == new Date(this.selectedDateValue).toISOString().split('T')[0]);
+      this.sortEvents();
     })
   }
 
@@ -49,7 +50,22 @@ export class EventsComponent implements OnInit {
       if(res){
         this.selectedDateValue = this.localStorageService.getSelectedDate();
         this.events = this.localStorageService.getEvents().filter(data=> data.date == new Date(this.selectedDateValue).toISOString().split('T')[0]);
+        this.sortEvents();
       }
+    })
+  }
+
+  sortEvents(){
+    this.events.sort((a,b)=>{
+      let [ahours, aminutes] = a.time.from.split(':');
+      let x = new Date(a.date)
+      x.setHours(parseInt(ahours), parseInt(aminutes), 0, 0);
+
+      let [bhours, bminutes] = b.time.from.split(':');
+      let y = new Date(b.date)
+      y.setHours(parseInt(bhours), parseInt(bminutes), 0, 0);
+
+      return x.getTime()-y.getTime();
     })
   }
 
@@ -72,14 +88,14 @@ export class EventsComponent implements OnInit {
     let dialogRef = this.dialog.open(AddEventComponent,{data: event});
     dialogRef.afterClosed().subscribe(res=>{
       if(res){ this.helperService.setEvents([res.data], Status.UPDATE); }
-    })
+    });
   }
 
   deleteEvent(event:Event){
     let dialogRef = this.dialog.open(this.deleteConfirmationRef);
     dialogRef.afterClosed().subscribe(res=>{
       if(res){ this.helperService.setEvents([event], Status.DELETE); }
-    })
+    });
   }
 
 }

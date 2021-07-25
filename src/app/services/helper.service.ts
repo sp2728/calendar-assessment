@@ -144,13 +144,15 @@ export class HelperService {
       let toDate1 = new Date(res.date);
       toDate1.setHours(parseInt(toHours1), parseInt(toMinutes1),0 ,0);
 
-      if((fromDate2< fromDate1) && (toDate2> fromDate2)){
+      if((fromDate2< fromDate1) && (toDate2> fromDate1)){
         return true;
       }
 
       else if((fromDate2 > toDate1) && (toDate2< toDate1)){
         return true;
       }
+
+      return false;
     });
 
     if(clashEvents){

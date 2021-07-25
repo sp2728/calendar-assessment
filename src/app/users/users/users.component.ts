@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { User } from 'src/app/models/user';
@@ -13,6 +13,12 @@ import { AddUserComponent } from '../add-user/add-user.component';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+
+  @ViewChild('usersList', { static: false })
+  usersListRef: TemplateRef<any>;
+
+  @ViewChild('deleteConfirmation', { static: false })
+  deleteConfirmationRef: TemplateRef<any>;
 
   users: User[];
 
@@ -83,4 +89,23 @@ export class UsersComponent implements OnInit {
   addUser(){
     this.dialog.open(AddUserComponent);
   }
+
+  viewUsers(){
+    this.dialog.open(this.usersListRef);
+  }
+
+  editUser(user:User){
+    let dialogRef = this.dialog.open(AddUserComponent,{data: user});
+    dialogRef.afterClosed().subscribe(res=>{
+      if(res){ this.helperService.setUsers([res.data], Status.UPDATE); }
+    });
+  }
+
+  deleteUser(user:User){
+    let dialogRef = this.dialog.open(this.deleteConfirmationRef);
+    dialogRef.afterClosed().subscribe(res=>{
+      if(res){ this.helperService.setUsers([user], Status.DELETE); }
+    });
+  }
+
 }
