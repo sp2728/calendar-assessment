@@ -2,11 +2,10 @@
     <a class="addEvents" mat-fab color="warn" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()" > <mat-icon>add</mat-icon>  </a>
 
     <div class="header">
-        <h3>
-            <span>
-                Events on {{selectedDateValue | date}}
-            </span>  
-        </h3>
+        <span>
+           <h3>Events on {{selectedDateValue | date}}</h3> 
+        </span>
+        <a mat-raised-button color="primary" title="Download JSON" [href]="downloadJsonHref" download="{{jsonFileName}}" *ngIf="downloadJsonHref"> Download Events </a>
     </div>
 
     <div class="content" *ngIf="events.length !=0">

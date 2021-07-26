@@ -32,9 +32,7 @@
             </mat-form-field>
         </div>
 
-        <mat-error *ngIf="inviteeCtrl.errors && inviteeCtrl.errors.duplicateUser"> User already exists in the list </mat-error>
-        <mat-error *ngIf="inviteeCtrl.errors && inviteeCtrl.errors.invalidUser"> User does not exists </mat-error>
-
+        <mat-error *ngIf="inviteeCtrl.errors"> {{getErrorMessage(inviteeCtrl)}} </mat-error>
         <mat-form-field class="example-chip-list" appearance="fill">
             <mat-label>Invitees</mat-label>
             <mat-chip-list #chipList aria-label="Invitees" formControlName="invitees">

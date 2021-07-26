@@ -65,11 +65,6 @@ export class AddEventComponent implements OnInit {
       map((invitee: string | null) => invitee ? this._filter(invitee) : this.allInvitees.slice()));
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.invitees.push(event.option.viewValue);
-    this.inviteesInputRef.nativeElement.value = '';
-    this.inviteeCtrl.setValue(null);
-  }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
@@ -138,25 +133,37 @@ export class AddEventComponent implements OnInit {
   getErrorMessage(control:AbstractControl){
     if(control.errors.required) return 'Required';
     if(control.errors.dateValidator) return control.errors.dateValidator.value;
+    if((control.errors.invalidUser)) return 'User does not exists';
+    if((control.errors.duplicateUser)) return 'User already exists in the list';
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+
+    if(!this.invitees.includes(event.option.viewValue)){
+      this.invitees.push(event.option.viewValue);
+      this.inviteeCtrl.setValue(null);
+      this.inviteesInputRef.nativeElement.value = '';
+    }
+    else{
+      this.inviteeCtrl.setErrors({duplicateUser:true});
+    }
   }
 
   add(event: MatChipInputEvent): void {
-    this.inviteeCtrl.setErrors(null);
-    let value = (event.value || '').trim();
-    if(value){
-      if(!this.allInvitees.includes(value) ){
-        this.inviteeCtrl.setErrors({invalidUser: true});
-      }
-      else if(this.invitees.includes(value)){
-        this.inviteeCtrl.setErrors({duplicateUser:true});
-      }
-      else{
-        this.invitees.push(value);
-        this.inviteeCtrl.setValue(null);
-      }
-    }
+    // this.inviteeCtrl.setErrors(null);
+    // let value = (event.value || '').trim();
 
-    event.input.value = '';
+    // if(value){
+    //   if(!this.allInvitees.includes(value) ){
+    //     this.inviteeCtrl.setErrors({invalidUser: true});
+    //   }
+    //   else{
+    //     this.invitees.push(value);
+    //     this.inviteeCtrl.setValue(null);
+    //   }
+    // }
+
+    // event.input.value = '';
   }
 
   remove(invitee: string): void {

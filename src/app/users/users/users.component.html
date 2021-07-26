@@ -11,20 +11,13 @@
             </mat-form-field>
             <button type="submit" mat-raised-button color="primary" [disabled]="userSelectForm.invalid || userSelectForm.pristine"> Switch User </button>
     </form>
-    <span>
+    <div class="userActions" mat-dialog-actions>
         <a mat-raised-button color="warn" (click)="addUser()"> Add New User </a>
-        <a mat-raised-button color="accent" (click)="viewUsers()"> View Users </a>
-    </span>
+        <a mat-raised-button color="primary" (click)="viewUsers()"> View Users </a>
+    </div>
 </div>
 
 <ng-template #usersList>
-    <!-- <div mat-dialog-content>
-        <p>Sure you want to delete this event?</p>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-button color="warn" [mat-dialog-close]="false">No</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="true">Yes</button>
-    </div> -->
     <mat-card>
         <mat-card-header>
             <mat-card-title> View Users </mat-card-title>

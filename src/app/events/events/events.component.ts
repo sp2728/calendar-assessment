@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { Event } from 'src/app/models/event';
 import { EventsService } from 'src/app/services/events.service';
@@ -26,13 +27,17 @@ export class EventsComponent implements OnInit {
 
   loading:boolean = false;
 
+  downloadJsonHref:SafeUrl;
+
+  jsonFileName:string;
+
   constructor(
     private dialog: MatDialog,
     private http: EventsService,
     private helperService: HelperService,
-    private localStorageService: LocalstorageService
-  ) {
-  }
+    private localStorageService: LocalstorageService,
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
     this.setEventsData();
@@ -42,7 +47,6 @@ export class EventsComponent implements OnInit {
 
   setEventsData() {
     this.loading = true;
-
     this.http.getEventsData()
       .then(res => {
         if (res.success) {
@@ -51,6 +55,14 @@ export class EventsComponent implements OnInit {
       })
   }
 
+  generateDownloadJsonUri() {
+    var theJSON = JSON.stringify(this.events);
+    this.downloadJsonHref = this.sanitizer.bypassSecurityTrustUrl("data:text/json;charset=UTF-8," + encodeURIComponent(theJSON));
+    let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
+    this.jsonFileName = `events_${date}.json`
+  }
+
+
   getEvents() {
     this.helperService.getEvents().subscribe(res => {
       if(res){
@@ -58,6 +70,7 @@ export class EventsComponent implements OnInit {
         this.events = this.localStorageService.getEvents();
         if(this.events){
           this.events = this.getSelectedDateEvents(this.events);
+          this.generateDownloadJsonUri();
         }
       } 
     })
@@ -70,6 +83,7 @@ export class EventsComponent implements OnInit {
         this.events = this.localStorageService.getEvents();
         if(this.events){
           this.events = this.getSelectedDateEvents(this.events);
+          this.generateDownloadJsonUri();
         }
       }
     })
