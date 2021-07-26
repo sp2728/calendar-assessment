@@ -76,9 +76,10 @@ export class EventsComponent implements OnInit {
   }
 
   getSelectedDateEvents(events:Event[]){
-    events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
 
-    events.sort((a, b) => {
+    let newEvents = events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
+
+    newEvents.sort((a, b) => {
       let [ahours, aminutes] = a.time.from.split(':');
       let [bhours, bminutes] = b.time.from.split(':');
       let x = this.makeNewDate(a.date, parseInt(ahours), parseInt(aminutes));
@@ -86,7 +87,7 @@ export class EventsComponent implements OnInit {
       return x.getTime() - y.getTime();
     });
 
-    return events;
+    return newEvents;
   }
 
   addEvent() {
@@ -117,5 +118,4 @@ export class EventsComponent implements OnInit {
     d.setHours(hours, minutes, 0, 0);
     return d;
   }
-
 }

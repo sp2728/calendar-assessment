@@ -23,12 +23,17 @@
             <mat-form-field appearance="fill">
                 <mat-label> From </mat-label>
                 <input type="time" matInput formControlName="from" required>
+                <mat-error *ngIf="eventForm.controls.time.get('from').invalid"> {{getErrorMessage(eventForm.controls.time.get('from'))}}</mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label> To </mat-label>
                 <input type="time" matInput formControlName="to" required>
+                <mat-error *ngIf="eventForm.controls.time.get('to').invalid"> {{getErrorMessage(eventForm.controls.time.get('to'))}}</mat-error>
             </mat-form-field>
         </div>
+
+        <mat-error *ngIf="inviteeCtrl.errors && inviteeCtrl.errors.duplicateUser"> User already exists in the list </mat-error>
+        <mat-error *ngIf="inviteeCtrl.errors && inviteeCtrl.errors.invalidUser"> User does not exists </mat-error>
 
         <mat-form-field class="example-chip-list" appearance="fill">
             <mat-label>Invitees</mat-label>
@@ -39,12 +44,20 @@
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
               </mat-chip>
               <input placeholder="Add Invitee" 
+                        #inviteesInput
                      [matChipInputFor]="chipList"
+                     [formControl]="inviteeCtrl"
+                     [matAutocomplete]="auto"
                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                      [matChipInputAddOnBlur]="addOnBlur"
                      (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
-          </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let invitee of filteredInvitees | async" [value]="invitee">
+                  {{invitee}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
 
           <mat-form-field appearance="fill" >
             <mat-label> Owner </mat-label>

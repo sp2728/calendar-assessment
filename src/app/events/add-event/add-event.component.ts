@@ -1,10 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { Event } from 'src/app/models/event';
 import { HelperService, Status } from 'src/app/services/helper.service';
+import { LocalstorageService } from 'src/app/services/localstorage.service';
+import { User } from 'src/app/models/user';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-event',
@@ -24,7 +28,15 @@ export class AddEventComponent implements OnInit {
 
   submitButton:string = 'CREATE EVENT';
 
-  invitees: string[];
+  inviteeCtrl = new FormControl();
+
+  invitees: string[] = [];
+
+  filteredInvitees: Observable<string[]>;
+
+  allInvitees: string[] =  this.localStorageService.getUsers().map(res=> {return res.username});
+
+  @ViewChild('inviteesInput', {static:false}) inviteesInputRef : ElementRef<HTMLInputElement>;
 
   today = new Date().toISOString().split('T')[0];
 
@@ -32,18 +44,36 @@ export class AddEventComponent implements OnInit {
     private fb:FormBuilder,
     private snackbar:MatSnackBar,
     private helperService:HelperService,
-    private dialogRef: MatDialogRef<AddEventComponent>,
+    private localStorageService:LocalstorageService,
+    private dialogRef:MatDialogRef<AddEventComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Event
   ) { }
 
   ngOnInit() {
     if(this.data){
       this.selectedEvent = this.data;
-      this.invitees = this.selectedEvent.invitees;
-      if(this.data.name){ 
-        this.submitButton = 'UPDATE EVENT'; }
+      this.invitees = this.selectedEvent.invitees || [];
+      if(this.data.name) this.submitButton = 'UPDATE EVENT';
     }
     this.createEventForm();
+    this.filterInvitees();
+  }
+
+  filterInvitees(){
+    this.filteredInvitees = this.inviteeCtrl.valueChanges.pipe(
+      startWith(null),
+      map((invitee: string | null) => invitee ? this._filter(invitee) : this.allInvitees.slice()));
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.invitees.push(event.option.viewValue);
+    this.inviteesInputRef.nativeElement.value = '';
+    this.inviteeCtrl.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allInvitees.filter(invitee => invitee.toLowerCase().includes(filterValue));
   }
 
   createEventForm(){
@@ -53,10 +83,10 @@ export class AddEventComponent implements OnInit {
       location: [this.selectedEvent.location, [Validators.required]],
       date: [this.selectedEvent.date, [Validators.required, this.checkValidDate()]],
       time: this.fb.group({
-        from:[this.selectedEvent.time.from, [Validators.required, this.checkValidTime()]],
+        from:[this.selectedEvent.time.from, [Validators.required]],
         to: [this.selectedEvent.time.to, [Validators.required]]
       }),
-      invitees:[this.selectedEvent.invitees],
+      invitees:[this.invitees],
       owner:[this.selectedEvent.owner]
     });
 
@@ -71,12 +101,11 @@ export class AddEventComponent implements OnInit {
     };
   }
 
-  checkValidTime(){
+
+  validateInvitees(){
     return (control: AbstractControl): ValidationErrors | null=> {
-      let [hours, minutes] = control.value.split(':');
-      // let error = new Date().setHours(hours, minutes, 0, 0) <= new Date();
-      // return !!error ? {variablesValidator: {value: "Invalid Date"}} : null;
-      return null;
+      let error = control.value === new Set(control.value).size;
+      return !error ? {dateValidator: {value: "Cannot have duplicate invitees"}} : null;
     };
   }
 
@@ -112,12 +141,22 @@ export class AddEventComponent implements OnInit {
   }
 
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    if (value) {
-      this.invitees.push(value);
+    this.inviteeCtrl.setErrors(null);
+    let value = (event.value || '').trim();
+    if(value){
+      if(!this.allInvitees.includes(value) ){
+        this.inviteeCtrl.setErrors({invalidUser: true});
+      }
+      else if(this.invitees.includes(value)){
+        this.inviteeCtrl.setErrors({duplicateUser:true});
+      }
+      else{
+        this.invitees.push(value);
+        this.inviteeCtrl.setValue(null);
+      }
     }
 
+    event.input.value = '';
   }
 
   remove(invitee: string): void {

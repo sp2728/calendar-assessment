@@ -240,8 +240,6 @@ export class HelperService {
   }
 
   findUserId(users:User[], user:User){
-
-    console.log(user, users);
     let val = users.find(data=> data.id == user.id);
 
     if(val) return true;
