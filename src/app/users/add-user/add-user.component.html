@@ -10,16 +10,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill">
+            <mat-label> Full Name </mat-label>
+            <input type="text" matInput formControlName="fullName" required>
+            <mat-error *ngIf="userForm.controls.fullName.invalid"> {{getErrorMessage(userForm.controls.fullName)}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
             <mat-label> Email </mat-label>
             <input type="text" matInput formControlName="email" required>
             <mat-error *ngIf="userForm.controls.email.invalid"> {{getErrorMessage(userForm.controls.email)}}</mat-error>
         </mat-form-field>
 
         <button mat-raised-button type="submit" color="primary" [disabled]="userForm.invalid"> {{submitButton}} </button>
-
     </form>
-
-
-
-
 </div>

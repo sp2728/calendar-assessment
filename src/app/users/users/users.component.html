@@ -37,7 +37,7 @@
                         <a mat-button color="warn" (click)="deleteUser(user)">
                             <mat-icon>delete</mat-icon>
                         </a>
-                        <a mat-button color="primary" (click)="editUser(user)">
+                        <a mat-button color="primary" [mat-dialog-close]="true" (click)="editUser(user)">
                             <mat-icon>edit</mat-icon>
                         </a>
                     </span>

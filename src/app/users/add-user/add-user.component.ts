@@ -13,7 +13,7 @@ export class AddUserComponent implements OnInit {
 
   userForm:FormGroup;
 
-  selectedUser: User = {id:null, username:'', email: ''};
+  selectedUser: User = new User({});
 
   submitButton:string = 'CREATE USER';
 
@@ -38,7 +38,9 @@ export class AddUserComponent implements OnInit {
 
   createuserForm(){
     this.userForm = this.fb.group({
+      id: [this.selectedUser.id],
       username: [this.selectedUser.username, [Validators.required, this.checkValidUsername()]],
+      fullName: [this.selectedUser.fullName, [Validators.required]],
       email: [this.selectedUser.email, [Validators.required, Validators.email]]
     });
   }
@@ -58,11 +60,8 @@ export class AddUserComponent implements OnInit {
 
   onSubmit(){
     if(this.userForm.valid){
-
       let user = new User(this.userForm.value);
-
       var userResult;
-
       if(this.data && this.data.id){
         userResult = this.helperService.setUsers([user], Status.UPDATE);  
       }

@@ -41,12 +41,13 @@ export class HelperService {
     var events:Event[] = this.localStorageService.getEvents();
 
     if(status == Status.LOAD){
-      this.events.next(true);
 
       if(!events){
         this.localStorageService.setEvents(data);
+        this.events.next(true);
         return { success:true, message:"Events have been loaded"};
       }
+      this.events.next(true);
       return { success:false, message:"Events already exists"}
     }
 
@@ -177,17 +178,18 @@ export class HelperService {
     var users:User[] = this.localStorageService.getUsers();
 
       if(status == Status.LOAD){
-        this.users.next(true);
 
         if(!users){
           this.localStorageService.setUsers(data);
+          this.users.next(true);
           return { success:true, message:"Users have been loaded"}
         }
-          return { success:false, message:"Users already exists"}
+        this.users.next(true);
+        return { success:false, message:"Users already exists"}
       }
 
       else if(status == Status.CREATE){
-        let userExists = this.findUser(users, data[0]);
+        let userExists = this.findUsername(users, data[0]);
         if(userExists){
           return {success:false, message:"Username already exists"};
         }
@@ -198,7 +200,7 @@ export class HelperService {
       }
 
       else if(status == Status.UPDATE){
-        let userExists = this.findUser(users, data[0]);
+        let userExists = this.findUserId(users, data[0]);
 
         if(!userExists){
           return {success:false, message:"User does not exist"};
@@ -216,7 +218,7 @@ export class HelperService {
         }
       }
       else if(status == Status.DELETE){
-        let userExists = this.findUser(users, data[0]);
+        let userExists = this.findUserId(users, data[0]);
         if(!userExists){
           return {success:false, message:"User does not exist"};
         }
@@ -229,11 +231,22 @@ export class HelperService {
       }
   }
 
-  findUser(users:User[], user:User){
+  findUsername(users:User[], user:User){
    let val = users.find(data=> data.username == user.username);
+
    if(val) return true;
 
     return false;
+  }
+
+  findUserId(users:User[], user:User){
+
+    console.log(user, users);
+    let val = users.find(data=> data.id == user.id);
+
+    if(val) return true;
+ 
+     return false;
   }
 
   getSelectedUser(){

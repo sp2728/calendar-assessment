@@ -26,8 +26,7 @@
 }
 
 .noContent{
-    padding: 20px;
-    height: 100%;
+    color: rgb(186, 186, 186);
     display: grid;
     place-items: center;
 }

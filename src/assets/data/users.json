@@ -2,10 +2,12 @@
     "users": [
         {
             "username": "steve123",
+            "fullName": "Steve Rand",
             "email": "steve@prp.com"
         },
         {
             "username": "mark11",
+            "fullName": "Mark Grump",
             "email": "mark@prp.com"
         }
     ]

@@ -52,7 +52,7 @@ export class UsersComponent implements OnInit {
     this.helperService.getUsers().subscribe(res=>{
       if(res){
         this.users = this.localStorageService.getUsers();
-        this.selectedUser = this.localStorageService.getSelectedUser();
+        this.helperService.setSelectedUser(this.users[0].username);
         this.createUserSelectForm();
       }
     })
@@ -90,15 +90,12 @@ export class UsersComponent implements OnInit {
     this.dialog.open(AddUserComponent);
   }
 
-  viewUsers(){
-    this.dialog.open(this.usersListRef);
-  }
-
   editUser(user:User){
     let dialogRef = this.dialog.open(AddUserComponent,{data: user});
-    dialogRef.afterClosed().subscribe(res=>{
-      if(res){ this.helperService.setUsers([res.data], Status.UPDATE); }
-    });
+  }
+
+  viewUsers(){
+    this.dialog.open(this.usersListRef);
   }
 
   deleteUser(user:User){

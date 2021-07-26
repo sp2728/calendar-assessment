@@ -19,83 +19,103 @@ export class EventsComponent implements OnInit {
 
   @ViewChild('deleteConfirmation', { static: false })
   deleteConfirmationRef: TemplateRef<any>;
-  
-  selectedDateValue:any;
+
+  selectedDateValue: any;
 
   events: Event[];
 
+  loading:boolean = false;
+
   constructor(
-    private dialog:MatDialog,
-    private http:EventsService,
-    private helperService:HelperService,
-    private localStorageService:LocalstorageService
+    private dialog: MatDialog,
+    private http: EventsService,
+    private helperService: HelperService,
+    private localStorageService: LocalstorageService
   ) {
-    this.setEventsData();
-   }
+  }
 
   ngOnInit() {
+    this.setEventsData();
     this.getSelectedDate();
     this.getEvents();
   }
 
-  getEvents(){
-    this.helperService.getEvents().subscribe(res=>{
-      this.events = this.localStorageService.getEvents().filter(data=> data.date == new Date(this.selectedDateValue).toISOString().split('T')[0]);
-      this.sortEvents();
+  setEventsData() {
+    this.loading = true;
+
+    this.http.getEventsData()
+      .then(res => {
+        if (res.success) {
+          this.helperService.setEvents(res.events, Status.LOAD);
+        }
+      })
+  }
+
+  getEvents() {
+    this.helperService.getEvents().subscribe(res => {
+      if(res){
+        this.loading = false;
+        this.events = this.localStorageService.getEvents();
+        if(this.events){
+          this.events = this.getSelectedDateEvents(this.events);
+        }
+      } 
     })
   }
 
-  getSelectedDate(){
-    this.helperService.getSelectedDate().subscribe(res=>{
-      if(res){
+  getSelectedDate() {
+    this.helperService.getSelectedDate().subscribe(res => {
+      if (res) {
         this.selectedDateValue = this.localStorageService.getSelectedDate();
-        this.events = this.localStorageService.getEvents().filter(data=> data.date == new Date(this.selectedDateValue).toISOString().split('T')[0]);
-        this.sortEvents();
+        this.events = this.localStorageService.getEvents();
+        if(this.events){
+          this.events = this.getSelectedDateEvents(this.events);
+        }
       }
     })
   }
 
-  sortEvents(){
-    this.events.sort((a,b)=>{
+  getSelectedDateEvents(events:Event[]){
+    events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
+
+    events.sort((a, b) => {
       let [ahours, aminutes] = a.time.from.split(':');
-      let x = new Date(a.date)
-      x.setHours(parseInt(ahours), parseInt(aminutes), 0, 0);
-
       let [bhours, bminutes] = b.time.from.split(':');
-      let y = new Date(b.date)
-      y.setHours(parseInt(bhours), parseInt(bminutes), 0, 0);
+      let x = this.makeNewDate(a.date, parseInt(ahours), parseInt(aminutes));
+      let y = this.makeNewDate(b.date, parseInt(bhours), parseInt(bminutes));
+      return x.getTime() - y.getTime();
+    });
 
-      return x.getTime()-y.getTime();
-    })
+    return events;
   }
 
-  addEvent(){
-    let event = new Event({owner: this.localStorageService.getSelectedUser()});
-    event.date = new Date(this.selectedDateValue).toISOString().split('T')[0];
+  addEvent() {
+    let event = new Event({ owner: this.localStorageService.getSelectedUser() });
+    event.date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
+    this.dialog.open(AddEventComponent, { data: event });
+  }
+
+  editEvent(event: Event) {
     this.dialog.open(AddEventComponent, {data: event});
   }
 
-  setEventsData(){
-    this.http.getEventsData()
-    .then(res=>{
-      if(res.success){
-        this.helperService.setEvents(res.events, Status.LOAD);
-      }
-    })
-  }
-
-  editEvent(event:Event){
-    let dialogRef = this.dialog.open(AddEventComponent,{data: event});
-    dialogRef.afterClosed().subscribe(res=>{
-      if(res){ this.helperService.setEvents([res.data], Status.UPDATE); }
-    });
-  }
-
-  deleteEvent(event:Event){
+  deleteEvent(event: Event) {
     let dialogRef = this.dialog.open(this.deleteConfirmationRef);
-    dialogRef.afterClosed().subscribe(res=>{
-      if(res){ this.helperService.setEvents([event], Status.DELETE); }
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) this.helperService.setEvents([event], Status.DELETE);
     });
+  }
+
+  getDateStatus() {
+    let date = this.makeNewDate(this.selectedDateValue);
+    let currDate = this.makeNewDate(new Date())
+    return date >= currDate;
+  };
+
+  makeNewDate(date:any, hours=0, minutes=0){
+    let d = new Date(date);
+    d.setHours(hours, minutes, 0, 0);
+    return d;
   }
 
 }
