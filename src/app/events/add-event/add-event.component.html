@@ -15,7 +15,7 @@
 
         <mat-form-field appearance="fill" >
             <mat-label> Date </mat-label>
-            <input type="date" matInput formControlName="date" min="{{today}}" required>
+            <input type="date" matInput formControlName="date" min="{{today}}" max="{{maxDay}}" required>
             <mat-error *ngIf="eventForm.controls.date.invalid"> {{getErrorMessage(eventForm.controls.date)}}</mat-error>
         </mat-form-field>
 
@@ -63,7 +63,10 @@
             <mat-error *ngIf="eventForm.controls.owner.invalid"> {{getErrorMessage(eventForm.controls.owner)}}</mat-error>
         </mat-form-field>
 
-        <button mat-raised-button type="submit" color="primary" [disabled]="eventForm.invalid"> {{submitButton}} </button>
 
+        <mat-dialog-actions align="end">
+            <button mat-button color="warn" mat-dialog-close>Cancel</button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="eventForm.invalid"> {{submitButton}} </button>
+        </mat-dialog-actions>
     </form>
 </div>

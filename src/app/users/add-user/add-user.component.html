@@ -21,6 +21,9 @@
             <mat-error *ngIf="userForm.controls.email.invalid"> {{getErrorMessage(userForm.controls.email)}}</mat-error>
         </mat-form-field>
 
-        <button mat-raised-button type="submit" color="primary" [disabled]="userForm.invalid"> {{submitButton}} </button>
+        <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close>Cancel</button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="userForm.invalid"> {{submitButton}} </button>
+        </mat-dialog-actions>
     </form>
 </div>

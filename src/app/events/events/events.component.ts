@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { Event } from 'src/app/models/event';
@@ -21,28 +20,35 @@ export class EventsComponent implements OnInit {
   @ViewChild('deleteConfirmation', { static: false })
   deleteConfirmationRef: TemplateRef<any>;
 
+  selectedUser: string;
+
   selectedDateValue: any;
 
   events: Event[];
 
-  loading:boolean = false;
+  loading: boolean = false;
 
-  downloadJsonHref:SafeUrl;
+  downloadJsonHref: SafeUrl;
 
-  jsonFileName:string;
+  jsonFileName: string;
+
+  selectedView:string = 'days';
 
   constructor(
     private dialog: MatDialog,
     private http: EventsService,
     private helperService: HelperService,
+    private snackbar: MatSnackBar,
     private localStorageService: LocalstorageService,
     private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
     this.setEventsData();
+    this.getSelectedView();
     this.getSelectedDate();
     this.getEvents();
+    this.getSelectedUser();
   }
 
   setEventsData() {
@@ -52,36 +58,27 @@ export class EventsComponent implements OnInit {
         if (res.success) {
           this.helperService.setEvents(res.events, Status.LOAD);
         }
-      })
+      });
   }
 
-  generateDownloadJsonUri() {
-    var theJSON = JSON.stringify(this.events);
-    this.downloadJsonHref = this.sanitizer.bypassSecurityTrustUrl("data:text/json;charset=UTF-8," + encodeURIComponent(theJSON));
-    let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
-    this.jsonFileName = `events_${date}.json`
-  }
-
-
-  getEvents() {
-    this.helperService.getEvents().subscribe(res => {
-      if(res){
-        this.loading = false;
-        this.events = this.localStorageService.getEvents();
-        if(this.events){
-          this.events = this.getSelectedDateEvents(this.events);
-          this.generateDownloadJsonUri();
-        }
-      } 
+  getSelectedView(){
+    this.helperService.getSelectedView().subscribe(res=>{
+      this.selectedView = res;
+      this.events = this.localStorageService.getEvents();
+      if (this.events) {
+        this.events = this.getSelectedDateEvents(this.events);
+        this.generateDownloadJsonUri();
+      }
     })
   }
+
 
   getSelectedDate() {
     this.helperService.getSelectedDate().subscribe(res => {
       if (res) {
         this.selectedDateValue = this.localStorageService.getSelectedDate();
         this.events = this.localStorageService.getEvents();
-        if(this.events){
+        if (this.events) {
           this.events = this.getSelectedDateEvents(this.events);
           this.generateDownloadJsonUri();
         }
@@ -89,10 +86,28 @@ export class EventsComponent implements OnInit {
     })
   }
 
-  getSelectedDateEvents(events:Event[]){
+  getEvents() {
+    this.helperService.getEvents().subscribe(res => {
+      if (res) {
+        this.loading = false;
+        this.events = this.localStorageService.getEvents();
+        if (this.events) {
+          this.events = this.getSelectedDateEvents(this.events);
+          this.generateDownloadJsonUri();
+        }
+      }
+    })
+  }
 
-    let newEvents = events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
+  getSelectedDateEvents(events: Event[]) {
+    var newEvents;
 
+    if(this.selectedView == 'days'){
+      newEvents = events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
+    }
+    else if(this.selectedView == 'months'){
+      newEvents = events.filter(data => (data.date).split('-')[1] == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0].split('-')[1]);
+    }
     newEvents.sort((a, b) => {
       let [ahours, aminutes] = a.time.from.split(':');
       let [bhours, bminutes] = b.time.from.split(':');
@@ -104,14 +119,28 @@ export class EventsComponent implements OnInit {
     return newEvents;
   }
 
+  generateDownloadJsonUri() {
+    var theJSON = JSON.stringify(this.events);
+    this.downloadJsonHref = this.sanitizer.bypassSecurityTrustUrl("data:text/json;charset=UTF-8," + encodeURIComponent(theJSON));
+    if(this.selectedView == 'days'){
+      let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
+      this.jsonFileName = `events_${date}.json`
+    }
+    else if(this.selectedView == 'months'){
+      let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0].split('-');
+      this.jsonFileName = `events_${date[0]}-${date[1]}.json`
+    }
+
+  }
+
   addEvent() {
     let event = new Event({ owner: this.localStorageService.getSelectedUser() });
     event.date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
-    this.dialog.open(AddEventComponent, { data: event });
+    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView}});
   }
 
   editEvent(event: Event) {
-    this.dialog.open(AddEventComponent, {data: event});
+    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView} });
   }
 
   deleteEvent(event: Event) {
@@ -123,13 +152,45 @@ export class EventsComponent implements OnInit {
 
   getDateStatus() {
     let date = this.makeNewDate(this.selectedDateValue);
-    let currDate = this.makeNewDate(new Date())
-    return date >= currDate;
+    if(this.selectedView == 'days'){
+      let currDate = this.makeNewDate(new Date())
+      return date >= currDate;
+    }
+    else if(this.selectedView == 'months'){
+      let d = new Date().getMonth();
+
+      return date.getMonth() >= d;
+    }
+
+
   };
 
-  makeNewDate(date:any, hours=0, minutes=0){
+  makeNewDate(date: any, hours = 0, minutes = 0) {
     let d = new Date(date);
     d.setHours(hours, minutes, 0, 0);
+
     return d;
+  }
+
+  enableEventActions(event: Event) {
+    if (event.status == 'CLOSED') {
+      return false;
+    }
+    if (this.selectedUser != event.owner) {
+      return false;
+    }
+    return true;
+  }
+
+  getSelectedUser() {
+    this.helperService.getSelectedUser().subscribe(res => {
+      if (res) {
+        this.selectedUser = this.localStorageService.getSelectedUser();
+        this.snackbar.open(`Welcome ${this.selectedUser}`, 'Close', {
+          duration: 2000,
+          verticalPosition: 'top'
+        })
+      }
+    })
   }
 }

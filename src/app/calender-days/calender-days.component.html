@@ -1,34 +1,48 @@
 <div class="container">
     <div class="leftPanel">
         <div class="calendar">
-            <div class="title">
-                Calendar & Events 
-            </div>
+            <div class="title"> Calendar & Events </div>
             <form [formGroup]="dateForm">
                 <div class="month">
-                    <mat-select formControlName="month">
+                    <mat-select formControlName="month" *ngIf="selectedView == 'days'">
                         <mat-option *ngFor="let month of months; let i=index" [value]="i">
                             {{month}}
                         </mat-option>
                     </mat-select>
-
                     <span class="year"> 2021</span>
+                    <mat-button-toggle-group class="btngroup" appearance="legacy" [value]="selectedView" (change)="changeView($event)">
+                        <mat-button-toggle value="days">Days</mat-button-toggle>
+                        <mat-button-toggle value="months">Months</mat-button-toggle>
+                      </mat-button-toggle-group>
                 </div>
-
-                <div class="week">
-                    <span *ngFor="let day of days"> {{day}} </span>
+                <div *ngIf="selectedView == 'days'">
+                    <div class="week">
+                        <span *ngFor="let day of days"> {{day}} </span>
+                    </div>
+    
+                    <div class="days">
+                        <span *ngFor="let day of numOfDays">
+                            <a class="date" mat-fab *ngIf="day!=0"
+                                [class.active]="checkActiveDay(day, selectedDate.getMonth())"
+                                [class.inactive]="checkInactiveDay(day,selectedDate.getMonth())"
+                                [class.bubble]= "checkEvents(day, selectedDate.getMonth())"
+                                (click)="changeDate(day)">{{day}}</a>
+                        </span>
+                    </div>
                 </div>
-
-                <div class="days">
-                    <span *ngFor="let day of numOfDays">
-                        <a class="date" mat-fab *ngIf="day!=0"
-                            [class.active]="checkActiveDay(day, selectedDate.getMonth())"
-                            (click)="changeDate(day)">{{day}}</a>
-                    </span>
+                <div *ngIf="selectedView == 'months'">
+                    <div class="monthView">
+                        <span class="monthItem" *ngFor="let month of months">
+                            <a class="date" mat-button
+                            [class.active]="checkActiveMonth(month)"
+                            [class.inactive]="checkInactiveMonth(month)"
+                            [class.bubble]= "checkMonthEvents(month)"
+                            (click)="changeMonth(month)">{{month}}</a>
+                        </span>
+                    </div>
                 </div>
             </form>
         </div>
-
         <div>
             <app-users class="users"></app-users>
         </div>

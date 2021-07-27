@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs/internal/Subject';
+import { MatButtonToggleChange } from '@angular/material';
+import { Event } from '../models/event';
 import { HelperService } from '../services/helper.service';
+import { LocalstorageService } from '../services/localstorage.service';
 
 @Component({
   selector: 'app-calender-days',
@@ -20,18 +22,27 @@ export class CalenderDaysComponent implements OnInit {
 
   selectedDate = new Date();
 
+  selectedView = 'days';
+
   numOfDays:number[];
+
+  events: Event[];
 
   constructor(
     private fb: FormBuilder,
+    private localStorageService:LocalstorageService,
     private helperService:HelperService
   ) { }
 
   ngOnInit() {
     this.helperService.setSelectedDate(this.selectedDate);
+    this.getSelectedDate();
+    this.helperService.setSelectedView(this.selectedView);
+    this.getSelectedView();
     this.createDateForm();
     this.numOfDays = this.getNumberofDays();
     this.monthChange();
+    this.getEvents();
   }
 
   createDateForm() {
@@ -39,6 +50,14 @@ export class CalenderDaysComponent implements OnInit {
       year: [this.currDate.getFullYear(), [Validators.required]],
       month: [this.currDate.getMonth(), [Validators.required]],
       date: [this.currDate.getDate(), [Validators.required]]
+    })
+  }
+
+  getSelectedDate(){
+    this.helperService.getSelectedDate().subscribe(res=>{
+      if(res){
+        this.selectedDate = new Date(this.localStorageService.getSelectedDate());
+      }
     })
   }
 
@@ -65,9 +84,91 @@ export class CalenderDaysComponent implements OnInit {
   }
 
   checkActiveDay(day, month){
+    return (day == this.selectedDate.getDate()) && (month == this.selectedDate.getMonth());
+  }
 
-    if((day == this.selectedDate.getDate()) && (month == this.selectedDate.getMonth())){ return true;}
+  checkInactiveDay(day, month){
+   let d = new Date();
+   d.setDate(day);
+   d.setMonth(month);
+    d.setHours(0,0,0,0);
+
+    let a = new Date();
+    a.setHours(0,0,0,0);
+    return d<a;
+  }
+
+  checkEvents(day, month){
+    let d = new Date();
+    d.setDate(day);
+    d.setMonth(month);
+     d.setHours(0,0,0,0);
+     
+    let event = this.events?this.events.find(data=> data.date == d.toISOString().split('T')[0]):null;
+    
+    let inactiveDay = this.checkInactiveDay(day, month);
+
+    if(event && !inactiveDay ) return true;
     return false;
   }
 
+  getEvents() {
+    this.helperService.getEvents().subscribe(res => {
+      if(res){
+        this.events = this.localStorageService.getEvents();
+      } 
+    })
+  }
+
+  changeView(event: MatButtonToggleChange){
+    this.helperService.setSelectedView(event.value);
+  }
+
+  checkActiveMonth(month){
+    let index = this.months.findIndex(data=> data == month);
+    return (index == this.selectedDate.getMonth());
+  }
+
+  checkInactiveMonth(month){
+   let index = this.months.findIndex(data=> data == month);
+
+    let d = new Date();
+    d.setMonth(index);
+     d.setHours(0,0,0,0);
+ 
+     let a = new Date();
+     a.setHours(0,0,0,0);
+     return d<a;
+  }
+
+  checkMonthEvents(month){
+    let index = this.months.findIndex(data=> data == month);
+
+    let d = new Date();
+    d.setMonth(index);
+     d.setHours(0,0,0,0);
+     
+    let event = this.events?this.events.find(data=> data.date.split('-')[1] == d.toISOString().split('T')[0].split('-')[1]):null;
+    
+    let inactiveDay = this.checkInactiveMonth(month);
+
+    if(event && !inactiveDay ) return true;
+    return false;
+  }
+
+  changeMonth(month){
+    let index = this.months.findIndex(data=> data == month);
+    let d = new Date();
+    d.setMonth(index);
+     d.setHours(0,0,0,0);
+
+    this.helperService.setSelectedDate(d);
+    this.dateForm.get('month').setValue(index)
+  }
+
+  getSelectedView(){
+    this.helperService.getSelectedView().subscribe(res=>{
+      this.selectedView = res;
+    })
+  }
 }

@@ -89,6 +89,8 @@ THE SOFTWARE.
 
 @angular/material/button
 
+@angular/material/button-toggle
+
 @angular/material/card
 
 @angular/material/chips
@@ -100,8 +102,6 @@ THE SOFTWARE.
 @angular/material/form-field
 
 @angular/material/icon
-
-@angular/material/list
 
 @angular/material/select
 

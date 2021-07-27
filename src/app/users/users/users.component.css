@@ -5,6 +5,10 @@
     width: 100%;
 }
 
+.userActions{
+    align-items: center;
+}
+
 .userActions a, .content button{
     margin: 10px;
 }

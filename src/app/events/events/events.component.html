@@ -1,27 +1,30 @@
 <div class="container" *ngIf="events && !loading">
-    <a class="addEvents" mat-fab color="warn" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()" > <mat-icon>add</mat-icon>  </a>
+    <a class="addEvents" mat-fab color="warn" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()">
+        <mat-icon>add</mat-icon>
+    </a>
 
     <div class="header">
         <span>
-           <h3>Events on {{selectedDateValue | date}}</h3> 
+            <h3 *ngIf="selectedView=='days'">Events on {{selectedDateValue | date}}</h3>
+            <h3 *ngIf="selectedView=='months'">Events on {{selectedDateValue | date: 'MMMM, y'}}</h3>
         </span>
-        <a mat-raised-button color="primary" title="Download JSON" [href]="downloadJsonHref" download="{{jsonFileName}}" *ngIf="downloadJsonHref"> Download Events </a>
+        <a mat-raised-button color="primary" title="Download JSON" [href]="downloadJsonHref" download="{{jsonFileName}}"
+            *ngIf="downloadJsonHref"> Download Events </a>
     </div>
 
     <div class="content" *ngIf="events.length !=0">
         <mat-card *ngFor="let event of events">
-            <div class="details">
+            <div class="eventdate">
+                <div>{{event.date | date: 'dd'}}</div>
+                <div>{{event.date | date: 'MMM'}}</div>
+            </div>
+            <mat-card-content>
                 <mat-card-title>{{event.name}}</mat-card-title>
+                <mat-card-subtitle>
+                    <mat-icon> location_on</mat-icon> {{event.location}}
+                </mat-card-subtitle>
                 <p>
-                    <mat-icon> location_on</mat-icon> &nbsp;
-                    <span>{{event.location}}</span>
-                </p>
-                <p>
-                    <mat-icon>date_range</mat-icon> &nbsp;
-                    <span>{{event.date | date}}</span>
-                </p>
-                <p>
-                    <mat-icon>access_time</mat-icon> &nbsp;
+                    <mat-icon>access_time</mat-icon>
                     <span class="fromTime">{{event.time.from}}</span>
                     <span>{{event.time.to}}</span>
                 </p>
@@ -29,15 +32,16 @@
                     {{event.status}}
                 </p>
                 <p>
-                    {{event.owner}}
+                   <b>Hosted by @{{event.owner}}</b> 
                 </p>
-            </div>
-            <div class="actions" *ngIf="event.status != 'CLOSED'">
-                <a mat-fab color="warn" (click)="deleteEvent(event)">
-                    <mat-icon>delete</mat-icon>
-                </a>
+            </mat-card-content>
+
+            <div class="actions" *ngIf="enableEventActions(event)">
                 <a mat-fab color="primary" (click)="editEvent(event)">
                     <mat-icon>edit</mat-icon>
+                </a>
+                <a mat-fab color="warn" (click)="deleteEvent(event)">
+                    <mat-icon>delete</mat-icon>
                 </a>
             </div>
         </mat-card>

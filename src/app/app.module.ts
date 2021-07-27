@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatSelectModule } from '@angular/material';
+import { MatButtonModule, MatButtonToggleModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatSelectModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalenderDaysComponent } from './calender-days/calender-days.component';
 import { CalenderInviteesComponent } from './calender-invitees/calender-invitees.component';
@@ -27,6 +27,7 @@ import { AddUserComponent } from './users/add-user/add-user.component';
     UsersModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MatButtonToggleModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,

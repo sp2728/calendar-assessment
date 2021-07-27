@@ -33,15 +33,46 @@
 
 mat-card{
     margin: 10px 0;
+    padding: 0;
+    height: 200px;
     background-color: rgba(241, 135, 1, 0.3);
-    opacity: 0.8;
     display: flex;
 }
 
-mat-card p{
+mat-card-content{
+    padding: 20px;
+    width: 50%;
+}
+
+mat-card-title{
+    margin-bottom: 15px;
+}
+
+mat-card-subtitle, p{
    display: flex;
    align-items: center;
 }
+
+.eventdate{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    height: 100%;
+    background-color: rgb(0, 0, 131, 0.5);
+}
+
+.eventdate div{
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.eventdate div:first-child{
+    font-weight: 400;
+    font-size: 42px;
+}
+
 
 .fromTime::after{
     content: "-";
@@ -49,10 +80,12 @@ mat-card p{
 }
 
 .actions{
-    margin-left: auto;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
 }
 
 .actions a{
-    margin:20px
+    margin:10px
 }
 

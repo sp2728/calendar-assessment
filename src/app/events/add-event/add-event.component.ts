@@ -21,12 +21,16 @@ export class AddEventComponent implements OnInit {
 
   selectedEvent = new Event({});
 
+  selectedView:string = 'days';
+
+  selectedDate:Date;
+
   selectable = true;
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  submitButton:string = 'CREATE EVENT';
+  submitButton:string = 'Create Event';
 
   inviteeCtrl = new FormControl();
 
@@ -40,20 +44,24 @@ export class AddEventComponent implements OnInit {
 
   today = new Date().toISOString().split('T')[0];
 
+  maxDay:string = '';
+
   constructor(
     private fb:FormBuilder,
     private snackbar:MatSnackBar,
     private helperService:HelperService,
     private localStorageService:LocalstorageService,
     private dialogRef:MatDialogRef<AddEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Event
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit() {
     if(this.data){
-      this.selectedEvent = this.data;
+      this.selectedEvent = this.data.event;
       this.invitees = this.selectedEvent.invitees || [];
-      if(this.data.name) this.submitButton = 'UPDATE EVENT';
+      if(this.data.event.name) this.submitButton = 'Update Event';
+      this.selectedView = this.data.selectedView;
+      this.selectedDate = this.data.selectedDate;
     }
     this.createEventForm();
     this.filterInvitees();
@@ -86,7 +94,15 @@ export class AddEventComponent implements OnInit {
     });
 
     this.eventForm.get('owner').disable();
-    this.eventForm.get('date').disable();
+
+    if(this.selectedView == 'days'){
+      this.eventForm.get('date').disable();
+    }
+
+    if(this.selectedView == 'months'){
+      this.selectedDate = new Date(this.localStorageService.getSelectedDate());
+      this.maxDay = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth()+1, 0).toISOString().split('T')[0];
+    }
   }
 
   checkValidDate(){
@@ -106,25 +122,21 @@ export class AddEventComponent implements OnInit {
 
   onSubmit(){
     if(this.eventForm.valid){
-
       let event =  new Event(this.eventForm.getRawValue());
-
       var eventResult;
-
-      if(this.data && this.data.name){
+      if(this.data.event && this.data.event.name){
         eventResult = this.helperService.setEvents([event], Status.UPDATE);  
       }
       else{
         eventResult = this.helperService.setEvents([event], Status.CREATE);  
       }
 
-      if(!eventResult.success){
-        this.snackbar.open(eventResult.message, 'Close', {
-          duration: 3000,
-          verticalPosition: 'top'
-        })
-      }
-      else{
+      this.snackbar.open(eventResult.message, 'Close', {
+        duration: 2000,
+        verticalPosition: 'top'
+      })
+
+      if(eventResult.success){
         this.dialogRef.close();
       }
     }
@@ -173,5 +185,4 @@ export class AddEventComponent implements OnInit {
       this.invitees.splice(index, 1);
     }
   }
-  
 }

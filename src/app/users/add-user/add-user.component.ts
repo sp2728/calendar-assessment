@@ -15,7 +15,7 @@ export class AddUserComponent implements OnInit {
 
   selectedUser: User = new User({});
 
-  submitButton:string = 'CREATE USER';
+  submitButton:string = 'Create User';
 
 
   constructor(
@@ -30,7 +30,7 @@ export class AddUserComponent implements OnInit {
   ngOnInit() {
     if(this.data){
       this.selectedUser = this.data;
-      if(this.data.id){ this.submitButton = 'UPDATE USER'; }
+      if(this.data.id){ this.submitButton = 'Update User'; }
     }
 
     this.createuserForm();
@@ -69,13 +69,12 @@ export class AddUserComponent implements OnInit {
         userResult = this.helperService.setUsers([user], Status.CREATE);  
       }
 
-      if(!userResult.success){
-        this.snackbar.open(userResult.message, 'Close', {
-          duration: 3000,
-          verticalPosition: 'top'
-        })
-      }
-      else{
+      this.snackbar.open(userResult.message, 'Close', {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+
+      if(userResult.success){
         this.dialogRef.close();
       }
     }

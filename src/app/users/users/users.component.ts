@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog, MatSelectionListChange, MatSnackBar } from '@angular/material';
 import { User } from 'src/app/models/user';
 import { HelperService, Status } from 'src/app/services/helper.service';
 import { LocalstorageService } from 'src/app/services/localstorage.service';
@@ -42,35 +42,27 @@ export class UsersComponent implements OnInit {
     this.getUsers();
   }
 
-  createUserSelectForm(){
-    this.userSelectForm = this.fb.group({
-      username:[this.selectedUser, [Validators.required]]
-    })
-  }
-
   getUsers(){
     this.helperService.getUsers().subscribe(res=>{
       if(res){
         this.users = this.localStorageService.getUsers();
-        this.helperService.setSelectedUser(this.users[0].username);
-        this.createUserSelectForm();
+        if(!this.selectedUser){
+          this.helperService.setSelectedUser(this.users[0].username);
+        }
       }
     })
   }
 
-  onSubmit(){
-    if(this.userSelectForm.valid){
-      this.helperService.setSelectedUser(this.userSelectForm.value.username);
-    }
+  changeUser(event: MatSelectionListChange){
+    this.helperService.setSelectedUser(event['value']); 
   }
-  
 
   getSelectedUser(){
     this.helperService.getSelectedUser().subscribe(res=>{
       if(res){
         this.selectedUser = this.localStorageService.getSelectedUser();
         this.snackbar.open(`Welcome ${this.selectedUser}`, 'Close',{
-          duration: 3000,
+          duration: 2000,
           verticalPosition: 'top'
         })
       }
@@ -91,7 +83,7 @@ export class UsersComponent implements OnInit {
   }
 
   editUser(user:User){
-    let dialogRef = this.dialog.open(AddUserComponent,{data: user});
+    this.dialog.open(AddUserComponent,{data: user});
   }
 
   viewUsers(){

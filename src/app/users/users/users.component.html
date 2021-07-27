@@ -1,16 +1,15 @@
 <h2> User </h2>
 <div class="content">
-    <form [formGroup]="userSelectForm" *ngIf="users" (ngSubmit)="onSubmit()">
+    <div *ngIf="users">
         <mat-form-field appearance="fill">
-            <mat-label> Current logged in user </mat-label>
-            <mat-select color="primary" formControlName="username">
+            <mat-label> Switch User </mat-label>
+            <mat-select color="primary" [value]="this.selectedUser" (selectionChange)="changeUser($event)">
                 <mat-option *ngFor="let user of users; let i=index" [value]="user.username">
                     {{user.username}}
                 </mat-option>
             </mat-select>
-            </mat-form-field>
-            <button type="submit" mat-raised-button color="primary" [disabled]="userSelectForm.invalid || userSelectForm.pristine"> Switch User </button>
-    </form>
+        </mat-form-field>
+    </div>
     <div class="userActions" mat-dialog-actions>
         <a mat-raised-button color="warn" (click)="addUser()"> Add New User </a>
         <a mat-raised-button color="primary" (click)="viewUsers()"> View Users </a>
@@ -18,27 +17,32 @@
 </div>
 
 <ng-template #usersList>
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title> View Users </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list role="list">
-                <mat-list-item role="listitem" *ngFor="let user of users;">
-                  <span> {{user.username}} </span>    
-                    <span>
-                        <a mat-button color="warn" (click)="deleteUser(user)">
-                            <mat-icon>delete</mat-icon>
-                        </a>
-                        <a mat-button color="primary" [mat-dialog-close]="true" (click)="editUser(user)">
-                            <mat-icon>edit</mat-icon>
-                        </a>
-                    </span>
-                </mat-list-item>
-              </mat-list>
-          </mat-card-content>
-    </mat-card>
+    <h1 mat-dialog-title> View Users </h1>
 
+    <div mat-dialog-content>
+        <table>
+            <tr>
+                <th> Username </th>
+                <th> Full Name </th>
+                <th> Actions </th>
+            </tr>
+            <tr *ngFor="let user of users;">
+                <td> {{user.username}} </td>
+                <td> {{user.fullName}} </td>
+                <td>
+                    <a mat-button color="warn" (click)="deleteUser(user)">
+                        <mat-icon>delete</mat-icon>
+                    </a>
+                    <a mat-button color="primary" [mat-dialog-close]="true" (click)="editUser(user)">
+                        <mat-icon>edit</mat-icon>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close color="warn">Close</button>
+      </div>
 </ng-template>
 
 <ng-template #deleteConfirmation>

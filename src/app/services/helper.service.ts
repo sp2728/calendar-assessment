@@ -30,6 +30,8 @@ export class HelperService {
 
   selectedDate = new BehaviorSubject(true);
 
+  selectedView = new Subject<string>();
+
   constructor( private localStorageService:LocalstorageService ) { }
 
   getEvents(){
@@ -145,11 +147,11 @@ export class HelperService {
       let toDate1 = new Date(res.date);
       toDate1.setHours(parseInt(toHours1), parseInt(toMinutes1),0 ,0);
 
-      if((fromDate2< fromDate1) && (toDate2> fromDate1)){
+      if((fromDate2<= fromDate1) && (toDate2> fromDate1)){
         return true;
       }
 
-      else if((fromDate2 > toDate1) && (toDate2< toDate1)){
+      else if((fromDate2 > toDate1) && (toDate2<= toDate1)){
         return true;
       }
 
@@ -263,6 +265,14 @@ export class HelperService {
   setSelectedDate(date:any){
     this.localStorageService.setSelectedDate(date);
     this.selectedDate.next(true);
+  }
+
+  setSelectedView(view:string){
+    this.selectedView.next(view);
+  }
+
+  getSelectedView(){
+    return this.selectedView.asObservable();
   }
 
 }
