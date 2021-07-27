@@ -74,11 +74,8 @@ export class HelperService {
     
     else if(status == Status.UPDATE){
       let eventExists = this.findEvent(events, data[0]);
-      if(!eventExists){
-        return {success:false, message:"Event does not exist"};
-      }
-      
-      else{
+
+      if(eventExists){
         let {success, message} = this.validateEvent(events, data[0], Status.UPDATE);
         if(success){
           events = events.map(event=>{
@@ -91,28 +88,29 @@ export class HelperService {
           this.events.next(true);
           return {success:true, message:"Event updated successfully"};
         }
-        else{
-          return {success, message};
-        }
+        return {success, message};
       }
+      return {success:false, message:"Event does not exist"};
     }
 
     else if(status == Status.DELETE){
       let eventExists = this.findEvent(events, data[0]);
 
-      if(!eventExists){
-        return {success:false, message:"Events does not exist"};
-      }
-      else{
+      if(eventExists){
         events = events.filter(event=> event.id != data[0].id);
         this.localStorageService.setEvents(events);
         this.events.next(true);
         return {success:true, message:"Event deleted successfully"};
       }
+      else{
+        return {success:false, message:"Events does not exist"};
+      }
     }
   }
 
   validateEvent(events:Event[], event:Event, eventStatus: Status){
+
+    let eventExists = this.findEvent(events, event);
     
     let currEvents = events.filter(data=> data.date == event.date);
 
@@ -120,6 +118,10 @@ export class HelperService {
 
     if(existOwnerEvent && eventStatus== Status.CREATE){
       return {success:false, message:'Event cannot be created. User has reached the event limit for the day.'}
+    }
+
+    if(eventExists && eventStatus == Status.UPDATE && (JSON.stringify(eventExists.time) == JSON.stringify(event.time))){
+      return {success:true, message:"Event updated successfully"};
     }
 
     let [fromHours2, fromMinutes2]= event.time.from.split(':');
@@ -134,7 +136,7 @@ export class HelperService {
       return {success:false, message: "Past events cannot be created."};
     }
 
-    if(fromDate2> toDate2){
+    if(fromDate2>= toDate2){
       return {success:false, message: "Event cannot be created. Please check the event times."};
     }
 
@@ -166,8 +168,7 @@ export class HelperService {
 
   findEvent(events:Event[], event:Event){
     let val = events.find(data=> data.id == event.id);
-    if(val) return true;
-     return false;
+    if(val) return val;
    }
 
 

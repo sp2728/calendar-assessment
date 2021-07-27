@@ -104,7 +104,7 @@ export class CalenderDaysComponent implements OnInit {
     d.setMonth(month);
      d.setHours(0,0,0,0);
      
-    let event = this.events?this.events.find(data=> data.date == d.toISOString().split('T')[0]):null;
+    let event = this.events?this.events.find(data=> data.date == d.toLocaleDateString().split('/').reverse().join('-')):null;
     
     let inactiveDay = this.checkInactiveDay(day, month);
 
@@ -148,7 +148,7 @@ export class CalenderDaysComponent implements OnInit {
     d.setMonth(index);
      d.setHours(0,0,0,0);
      
-    let event = this.events?this.events.find(data=> data.date.split('-')[1] == d.toISOString().split('T')[0].split('-')[1]):null;
+    let event = this.events?this.events.find(data=> data.date.split('-')[1] == d.toLocaleDateString().split('/')[1]):null;
     
     let inactiveDay = this.checkInactiveMonth(month);
 

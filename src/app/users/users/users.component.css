@@ -12,3 +12,7 @@
 .userActions a, .content button{
     margin: 10px;
 }
+
+table {
+    width: 500px;
+}

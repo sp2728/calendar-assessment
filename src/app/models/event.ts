@@ -14,7 +14,7 @@ export class Event{
     owner:string;
     status: Status;
 
-    constructor({id=Math.floor(Math.random()*899999+100000), name='', location='', date=new Date().toISOString().split('T')[0], time=new EventTime(), invitees=null, owner=''}){
+    constructor({id=Math.floor(Math.random()*899999+100000), name='', location='', date=new Date().toLocaleDateString().split('/').reverse().join('-'), time=new EventTime(), invitees=null, owner=''}){
         this.id = id;
         this.name = name;
         this.location = location;

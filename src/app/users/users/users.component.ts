@@ -46,7 +46,11 @@ export class UsersComponent implements OnInit {
     this.helperService.getUsers().subscribe(res=>{
       if(res){
         this.users = this.localStorageService.getUsers();
-        if(!this.selectedUser){
+        let user = this.users.find(data=> data.username == this.localStorageService.getSelectedUser()); 
+        if(user){
+          this.helperService.setSelectedUser(user.username);
+        }
+        else{
           this.helperService.setSelectedUser(this.users[0].username);
         }
       }
@@ -73,7 +77,9 @@ export class UsersComponent implements OnInit {
     this.http.getUsersData().then(response=>{
       if(response.success){
         this.helperService.setUsers(response.users, Status.LOAD);
-        this.helperService.setSelectedUser(response.users[0].username);
+        if(!this.localStorageService.getSelectedUser()){
+          this.helperService.setSelectedUser(response.users[0].username);
+        }
       }
     })
   }

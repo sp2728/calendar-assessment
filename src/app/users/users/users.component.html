@@ -20,29 +20,37 @@
     <h1 mat-dialog-title> View Users </h1>
 
     <div mat-dialog-content>
-        <table>
-            <tr>
-                <th> Username </th>
-                <th> Full Name </th>
-                <th> Actions </th>
-            </tr>
-            <tr *ngFor="let user of users;">
-                <td> {{user.username}} </td>
-                <td> {{user.fullName}} </td>
-                <td>
-                    <a mat-button color="warn" (click)="deleteUser(user)">
-                        <mat-icon>delete</mat-icon>
-                    </a>
-                    <a mat-button color="primary" [mat-dialog-close]="true" (click)="editUser(user)">
+        <table mat-table [dataSource]="users">
+            <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef> Username </th>
+                <td mat-cell *matCellDef="let user"> {{user.username}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef> Full Name </th>
+                <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef> Email </th>
+                <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let user"> 
+                    <a mat-button color="primary" *ngIf="selectedUser == user.username" (click)="editUser(user)">
                         <mat-icon>edit</mat-icon>
-                    </a>
+                    </a>  
                 </td>
-            </tr>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['username', 'fullName', 'email', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['username', 'fullName', 'email', 'actions'];"></tr>
         </table>
     </div>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close color="warn">Close</button>
-      </div>
+    </div>
 </ng-template>
 
 <ng-template #deleteConfirmation>

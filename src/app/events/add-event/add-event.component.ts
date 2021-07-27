@@ -42,7 +42,7 @@ export class AddEventComponent implements OnInit {
 
   @ViewChild('inviteesInput', {static:false}) inviteesInputRef : ElementRef<HTMLInputElement>;
 
-  today = new Date().toISOString().split('T')[0];
+  today = new Date().toLocaleDateString().split('/').reverse().join();
 
   maxDay:string = '';
 
@@ -70,13 +70,13 @@ export class AddEventComponent implements OnInit {
   filterInvitees(){
     this.filteredInvitees = this.inviteeCtrl.valueChanges.pipe(
       startWith(null),
-      map((invitee: string | null) => invitee ? this._filter(invitee) : this.allInvitees.slice()));
+      map((invitee: string | null) => invitee ? this._filter(invitee) : this.allInvitees.filter(data=> data != this.localStorageService.getSelectedUser()).slice()));
   }
 
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.allInvitees.filter(invitee => invitee.toLowerCase().includes(filterValue));
+    return this.allInvitees.filter(data=> data != this.localStorageService.getSelectedUser()).filter(invitee => invitee.toLowerCase().includes(filterValue));
   }
 
   createEventForm(){
@@ -101,7 +101,7 @@ export class AddEventComponent implements OnInit {
 
     if(this.selectedView == 'months'){
       this.selectedDate = new Date(this.localStorageService.getSelectedDate());
-      this.maxDay = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth()+1, 0).toISOString().split('T')[0];
+      this.maxDay = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth()+1, 0).toLocaleDateString().split('/').reverse().join('-');
     }
   }
 
@@ -162,7 +162,6 @@ export class AddEventComponent implements OnInit {
   }
 
   add(event: MatChipInputEvent): void {
-    // this.inviteeCtrl.setErrors(null);
     // let value = (event.value || '').trim();
 
     // if(value){

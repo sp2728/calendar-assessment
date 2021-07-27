@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatButtonToggleModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatSelectModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalenderDaysComponent } from './calender-days/calender-days.component';
-import { CalenderInviteesComponent } from './calender-invitees/calender-invitees.component';
 import { EventsModule } from './events/events.module';
 import { AddEventComponent } from './events/add-event/add-event.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -17,8 +16,7 @@ import { AddUserComponent } from './users/add-user/add-user.component';
 @NgModule({
   declarations: [
     AppComponent,
-    CalenderDaysComponent,
-    CalenderInviteesComponent
+    CalenderDaysComponent
   ],
   imports: [
     BrowserModule,

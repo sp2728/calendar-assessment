@@ -103,10 +103,10 @@ export class EventsComponent implements OnInit {
     var newEvents;
 
     if(this.selectedView == 'days'){
-      newEvents = events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0]);
+      newEvents = events.filter(data => data.date == this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/').reverse().join('-'));
     }
     else if(this.selectedView == 'months'){
-      newEvents = events.filter(data => (data.date).split('-')[1] == this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0].split('-')[1]);
+      newEvents = events.filter(data => (data.date).split('-')[1] == this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/')[1]);
     }
     newEvents.sort((a, b) => {
       let [ahours, aminutes] = a.time.from.split(':');
@@ -123,11 +123,11 @@ export class EventsComponent implements OnInit {
     var theJSON = JSON.stringify(this.events);
     this.downloadJsonHref = this.sanitizer.bypassSecurityTrustUrl("data:text/json;charset=UTF-8," + encodeURIComponent(theJSON));
     if(this.selectedView == 'days'){
-      let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
+      let date = this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/').reverse().join('-');
       this.jsonFileName = `events_${date}.json`
     }
     else if(this.selectedView == 'months'){
-      let date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0].split('-');
+      let date = this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/');
       this.jsonFileName = `events_${date[0]}-${date[1]}.json`
     }
 
@@ -135,7 +135,7 @@ export class EventsComponent implements OnInit {
 
   addEvent() {
     let event = new Event({ owner: this.localStorageService.getSelectedUser() });
-    event.date = this.makeNewDate(this.selectedDateValue).toISOString().split('T')[0];
+    event.date = this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/').reverse().join('-');
     this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView}});
   }
 

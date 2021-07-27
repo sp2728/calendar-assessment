@@ -1,5 +1,5 @@
 <div class="container" *ngIf="events && !loading">
-    <a class="addEvents" mat-fab color="warn" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()">
+    <a class="addEvents" mat-fab color="warn" matTooltip="Add Event" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()">
         <mat-icon>add</mat-icon>
     </a>
 
@@ -29,18 +29,18 @@
                     <span>{{event.time.to}}</span>
                 </p>
                 <p>
-                    {{event.status}}
+                  <b>Status:</b> {{event.status}}
                 </p>
                 <p>
                    <b>Hosted by @{{event.owner}}</b> 
                 </p>
             </mat-card-content>
 
-            <div class="actions" *ngIf="enableEventActions(event)">
-                <a mat-fab color="primary" (click)="editEvent(event)">
+            <div class="actions" >
+                <a mat-fab color="primary" *ngIf="enableEventActions(event)" (click)="editEvent(event)">
                     <mat-icon>edit</mat-icon>
                 </a>
-                <a mat-fab color="warn" (click)="deleteEvent(event)">
+                <a mat-fab color="warn" *ngIf="enableEventActions(event)" (click)="deleteEvent(event)">
                     <mat-icon>delete</mat-icon>
                 </a>
             </div>
