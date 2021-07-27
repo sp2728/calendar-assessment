@@ -1,7 +1,7 @@
 <div class="container">
 
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-        <h1> ENTER USER DETAILS </h1>
+        <h1 mat-dialog-title> {{'Enter User Details' | uppercase}} </h1>
 
         <mat-form-field appearance="fill">
             <mat-label> Username </mat-label>
@@ -21,7 +21,7 @@
             <mat-error *ngIf="userForm.controls.email.invalid"> {{getErrorMessage(userForm.controls.email)}}</mat-error>
         </mat-form-field>
 
-        <mat-dialog-actions align="end">
+        <mat-dialog-actions>
             <button mat-button mat-dialog-close>Cancel</button>
             <button mat-raised-button type="submit" color="primary" [disabled]="userForm.invalid"> {{submitButton}} </button>
         </mat-dialog-actions>

@@ -106,9 +106,12 @@ export class CalenderDaysComponent implements OnInit {
      
     let event = this.events?this.events.find(data=> data.date == d.toLocaleDateString().split('/').reverse().join('-')):null;
     
-    let inactiveDay = this.checkInactiveDay(day, month);
+    // let inactiveDay = this.checkInactiveDay(day, month);
 
-    if(event && !inactiveDay ) return true;
+    // if(event && !inactiveDay ) return true;
+
+    if(event) return true;
+
     return false;
   }
 
@@ -150,9 +153,12 @@ export class CalenderDaysComponent implements OnInit {
      
     let event = this.events?this.events.find(data=> data.date.split('-')[1] == d.toLocaleDateString().split('/')[1]):null;
     
-    let inactiveDay = this.checkInactiveMonth(month);
+    // let inactiveDay = this.checkInactiveMonth(month);
 
-    if(event && !inactiveDay ) return true;
+    // if(event && !inactiveDay ) return true;
+
+    if(event) return true;
+
     return false;
   }
 
@@ -160,7 +166,7 @@ export class CalenderDaysComponent implements OnInit {
     let index = this.months.findIndex(data=> data == month);
     let d = new Date();
     d.setMonth(index);
-     d.setHours(0,0,0,0);
+    d.setHours(0,0,0,0);
 
     this.helperService.setSelectedDate(d);
     this.dateForm.get('month').setValue(index)

@@ -53,7 +53,6 @@ mat-card:nth-child(odd) .eventdate{
 
 mat-card-content{
     padding: 20px;
-    width: 50%;
 }
 
 mat-card-title{
@@ -102,4 +101,9 @@ mat-card-subtitle, p{
 .actions a{
     margin:10px
 }
+
+.dialogClass{
+        height: 100px;
+}
+
 

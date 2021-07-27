@@ -136,11 +136,15 @@ export class EventsComponent implements OnInit {
   addEvent() {
     let event = new Event({ owner: this.localStorageService.getSelectedUser() });
     event.date = this.makeNewDate(this.selectedDateValue).toLocaleDateString().split('/').reverse().join('-');
-    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView}});
+    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView}, height: '600px',
+    width: '600px'});
   }
 
   editEvent(event: Event) {
-    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView} });
+    this.dialog.open(AddEventComponent, { data: {event, selectedView: this.selectedView},
+      height: '600px',
+      width: '600px',
+    });
   }
 
   deleteEvent(event: Event) {

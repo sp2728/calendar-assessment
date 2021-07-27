@@ -1,6 +1,7 @@
 <div class="container">
     <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-        <h1> ENTER EVENT DETAILS </h1>
+        <h1 mat-dialog-title> {{'Enter Event Details' | uppercase}} </h1>
+
         <mat-form-field appearance="fill">
             <mat-label> Name </mat-label>
             <input type="text" matInput formControlName="name" required>
@@ -19,7 +20,7 @@
             <mat-error *ngIf="eventForm.controls.date.invalid"> {{getErrorMessage(eventForm.controls.date)}}</mat-error>
         </mat-form-field>
 
-        <div formGroupName="time">
+        <div class="time" formGroupName="time">
             <mat-form-field appearance="fill">
                 <mat-label> From </mat-label>
                 <input type="time" matInput formControlName="from" required>
@@ -63,8 +64,7 @@
             <mat-error *ngIf="eventForm.controls.owner.invalid"> {{getErrorMessage(eventForm.controls.owner)}}</mat-error>
         </mat-form-field>
 
-
-        <mat-dialog-actions align="end">
+        <mat-dialog-actions>
             <button mat-button color="warn" mat-dialog-close>Cancel</button>
             <button mat-raised-button type="submit" color="primary" [disabled]="eventForm.invalid"> {{submitButton}} </button>
         </mat-dialog-actions>

@@ -1,3 +1,9 @@
+.container{
+    display: grid;
+    place-items: center;
+    height: 100%;
+}
+
 .content{
     display: flex;
     justify-content: space-around;
@@ -15,4 +21,13 @@
 
 table {
     width: 500px;
+}
+
+.title{
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+    font-style: italic;
+    padding: 10px 0;
+    border-bottom: 2px solid #B7CECE;
 }

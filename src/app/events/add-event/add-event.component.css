@@ -7,3 +7,8 @@ form{
 mat-form-field{
     margin: 10px;
 }
+
+.time{
+    display: flex;
+    justify-content: space-around;
+}
