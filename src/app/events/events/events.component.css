@@ -53,6 +53,7 @@ mat-card:nth-child(odd) .eventdate{
 
 mat-card-content{
     padding: 20px;
+    width: 50%;
 }
 
 mat-card-title{
