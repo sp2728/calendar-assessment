@@ -105,10 +105,6 @@ export class CalenderDaysComponent implements OnInit {
      d.setHours(0,0,0,0);
      
     let event = this.events?this.events.find(data=> data.date == d.toLocaleDateString().split('/').reverse().join('-')):null;
-    
-    // let inactiveDay = this.checkInactiveDay(day, month);
-
-    // if(event && !inactiveDay ) return true;
 
     if(event) return true;
 

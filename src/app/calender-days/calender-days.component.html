@@ -19,7 +19,6 @@
                     <div class="week">
                         <span *ngFor="let day of days"> {{day}} </span>
                     </div>
-    
                     <div class="days">
                         <span *ngFor="let day of numOfDays">
                             <a class="date" mat-fab *ngIf="day!=0"
@@ -43,11 +42,8 @@
                 </div>
             </form>
         </div>
-
          <app-users class="users"></app-users>
-
     </div>
-
     <div class="rightPanel">
         <app-events></app-events>
     </div>

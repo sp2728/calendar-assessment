@@ -12,6 +12,7 @@ import { AddEventComponent } from './events/add-event/add-event.component';
 import { HttpClientModule } from '@angular/common/http';
 import { UsersModule } from './users/users.module';
 import { AddUserComponent } from './users/add-user/add-user.component';
+import { EventsComponent } from './events/events/events.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { AddUserComponent } from './users/add-user/add-user.component';
   bootstrap: [AppComponent],
   entryComponents:[
     AddEventComponent,
-    AddUserComponent
+    AddUserComponent,
   ]
 })
 export class AppModule { }
