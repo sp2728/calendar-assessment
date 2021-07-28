@@ -108,7 +108,12 @@ mat-card-subtitle, p{
 }
 
 .cancel{
-    text-align: right;
+    display: flex;
+    padding-left: 10px;
+}
+
+.cancel button{
+    margin-left: auto;
 }
 
 .eventDetails{
@@ -116,7 +121,7 @@ mat-card-subtitle, p{
 }
 
 .eventDetails div{
-    margin: 20px;
+    margin-bottom: 20px;
 }
 
 .eventDetails div:last-child{
