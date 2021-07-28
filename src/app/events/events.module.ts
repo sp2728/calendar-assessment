@@ -26,6 +26,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   exports:[
     EventsComponent,
     AddEventComponent
+  ],
+  entryComponents:[
   ]
 })
 export class EventsModule { }

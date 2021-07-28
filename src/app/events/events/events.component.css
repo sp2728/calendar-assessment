@@ -107,4 +107,35 @@ mat-card-subtitle, p{
         height: 100px;
 }
 
+.cancel{
+    text-align: right;
+}
+
+.eventDetails{
+    padding: 10px;
+}
+
+.eventDetails div{
+    margin: 20px;
+}
+
+.eventDetails div:last-child{
+    display: flex;
+}
+
+.selectedDate{
+    display: flex; 
+}
+
+.selectedDate span:first-child{
+    display: flex;
+    align-items:center
+}
+
+.selectedDate span:last-child{
+    margin-left: auto;
+    display: flex;
+    align-items:center
+}
+
 

@@ -1,5 +1,6 @@
 <div class="container" *ngIf="events && !loading">
-    <a class="addEvents" mat-fab color="warn" matTooltip="Add Event" (click)="addEvent()" aria-label="Add Event" *ngIf="getDateStatus()">
+    <a class="addEvents" mat-fab color="warn" matTooltip="Add Event" (click)="addEvent()" aria-label="Add Event"
+        *ngIf="getDateStatus()">
         <mat-icon>add</mat-icon>
     </a>
 
@@ -29,14 +30,18 @@
                     <span>{{event.time.to}}</span>
                 </p>
                 <p>
-                  <b>Status:</b> {{event.status}}
+                    <b>Status:</b> {{event.status}}
                 </p>
                 <p>
-                   <b>Hosted by @{{event.owner}}</b> 
+                    <b>Hosted by @{{event.owner}}</b>
                 </p>
+
             </mat-card-content>
 
-            <div class="actions" >
+            <div class="actions">
+                <a mat-fab color="accent" (click)="viewEvent(event)">
+                    <mat-icon>remove_red_eye</mat-icon>
+                </a>
                 <a mat-fab color="primary" *ngIf="enableEventActions(event)" (click)="editEvent(event)">
                     <mat-icon>edit</mat-icon>
                 </a>
@@ -53,6 +58,48 @@
 </div>
 
 <div class="loading" *ngIf="loading"></div>
+
+
+<ng-template #viewEventBox>
+    <div class="cancel">
+        <button mat-button color="warn" mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="eventDetails">
+        <div>
+            <h1> {{selectedEvent.name}} </h1>
+        </div>
+
+        <div>
+            <mat-card-subtitle>
+                <mat-icon> location_on</mat-icon> {{selectedEvent.location}}
+            </mat-card-subtitle>
+        </div>
+        <div class="selectedDate">
+            <span>
+                <mat-icon>date_range</mat-icon> {{selectedEvent.date | date}}
+            </span>
+            <span>
+                <mat-icon>access_time</mat-icon>
+                <span class="fromTime">{{selectedEvent.time.from}}</span>
+                <span>{{selectedEvent.time.to}}</span>
+            </span>
+        </div>
+        <div>
+            <b>Owner@</b> {{selectedEvent.owner}}
+        </div>
+        <div>
+            <b>Invitees: &nbsp;</b>
+            <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal">
+                <mat-chip class="example-box" cdkDrag *ngFor="let invitee of selectedEvent.invitees">
+                    {{invitee}}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </div>
+
+</ng-template>
 
 <ng-template #deleteConfirmation>
     <div mat-dialog-content>

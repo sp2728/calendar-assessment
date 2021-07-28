@@ -15,6 +15,9 @@ import { AddEventComponent } from '../add-event/add-event.component';
 })
 export class EventsComponent implements OnInit {
 
+  @ViewChild('viewEventBox', { static: false })
+  viewEventRef: TemplateRef<any>;
+  
   @Input('selectedDate') selectedDate: Subject<any>;
 
   @ViewChild('deleteConfirmation', { static: false })
@@ -23,6 +26,8 @@ export class EventsComponent implements OnInit {
   selectedUser: string;
 
   selectedDateValue: any;
+
+  selectedEvent:Event;
 
   events: Event[];
 
@@ -186,6 +191,8 @@ export class EventsComponent implements OnInit {
     return true;
   }
 
+
+
   getSelectedUser() {
     this.helperService.getSelectedUser().subscribe(res => {
       if (res) {
@@ -197,4 +204,11 @@ export class EventsComponent implements OnInit {
       }
     })
   }
+
+  viewEvent(event){
+    this.selectedEvent = event;
+    let dialogRef = this.dialog.open(this.viewEventRef, {data:{event}, height:'400px', width:'400px'});
+  }
+
+
 }
